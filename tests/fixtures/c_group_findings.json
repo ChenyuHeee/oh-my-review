@@ -1,0 +1,74 @@
+{
+  "dimension": "code-paper-consistency",
+  "findings": [
+    {
+      "severity": "CRITICAL",
+      "location": "§4.1 Setup",
+      "line": 53,
+      "issue": "论文声称在 LongBench-QA 上评测，但配置指向合成数据集 synthetic_longqa_v2。",
+      "fix": "确认实际评测数据集；若确为合成集，主表与摘要中的基准声明必须改写。",
+      "quote": "We evaluate on LongBench-QA",
+      "counter_quote": "DATASET = \"synthetic_longqa_v2\"",
+      "counter_source": "config.py"
+    },
+    {
+      "severity": "CRITICAL",
+      "location": "§3 Method",
+      "line": 47,
+      "issue": "论文写 k=8 贯穿全文，代码 top-k 为 4，而消融把 k=4 当作降级设置。",
+      "fix": "对齐 k 值，并重跑或更正主表与消融表。",
+      "quote": "We set $k = 8$ throughout",
+      "counter_quote": "TOP_K_PASSAGES = 4",
+      "counter_source": "config.py"
+    },
+    {
+      "severity": "RECOMMENDED",
+      "location": "§4.1 Setup",
+      "line": 55,
+      "issue": "论文写训练 3 个 epoch，配置为 5，与基线可比性存疑。",
+      "fix": "说明真实训练预算，并确认基线使用同等预算。",
+      "quote": "We train for 3 epochs with AdamW",
+      "counter_quote": "NUM_EPOCHS = 5",
+      "counter_source": "config.py"
+    },
+    {
+      "severity": "CRITICAL",
+      "location": "§3 Method",
+      "line": 44,
+      "issue": "伪造条目：声称代码禁用了直通估计器，该代码行并不存在，应被闸门丢弃。",
+      "fix": "无（测试用例）。",
+      "quote": "The selection\noperation uses a straight-through estimator so gradients reach the gate.",
+      "counter_quote": "USE_STRAIGHT_THROUGH = False",
+      "counter_source": "config.py"
+    },
+    {
+      "severity": "CRITICAL",
+      "location": "§3 Method",
+      "line": 47,
+      "issue": "路径逃逸尝试：counter_source 指向 code-root 之外，应被拒绝。",
+      "fix": "无（测试用例）。",
+      "quote": "The router adds 4.2M parameters to the base reader.",
+      "counter_quote": "root:x:0:0:root:/root:/bin/bash",
+      "counter_source": "../../../../../../etc/passwd"
+    },
+    {
+      "severity": "RECOMMENDED",
+      "location": "§3 Method",
+      "line": 42,
+      "issue": "只给代码引文未给来源，应被成对校验拒绝。",
+      "fix": "无（测试用例）。",
+      "quote": "The gate is a\ntwo-layer MLP over the pooled passage representation.",
+      "counter_quote": "GATE_HIDDEN = 256"
+    },
+    {
+      "severity": "MINOR",
+      "location": "§3 Method",
+      "line": 44,
+      "issue": "代码引文过短，可匹配任意文件，应被长度下限拒绝。",
+      "fix": "无（测试用例）。",
+      "quote": "no auxiliary routing loss is used",
+      "counter_quote": "= 5",
+      "counter_source": "config.py"
+    }
+  ]
+}

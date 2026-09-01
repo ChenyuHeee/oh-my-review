@@ -1,0 +1,58 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["dimension", "findings"],
+  "properties": {
+    "dimension": {
+      "type": "string",
+      "description": "本次审查的维度标识，如 numeric-consistency"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "location", "issue", "fix"],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["CRITICAL", "RECOMMENDED", "MINOR"],
+            "description": "CRITICAL=阻断投稿 / RECOMMENDED=审稿人一定会问 / MINOR=打磨"
+          },
+          "location": {
+            "type": "string",
+            "description": "论文中的位置，如 §4.1 或 Table 3"
+          },
+          "line": {
+            "type": "integer",
+            "description": "paper.md 中的行号，取 quote 首行"
+          },
+          "issue": {
+            "type": "string",
+            "description": "一句话说清问题是什么"
+          },
+          "fix": {
+            "type": "string",
+            "description": "一句话说清怎么改"
+          },
+          "quote": {
+            "type": "string",
+            "description": "paper.md 中的逐字原文，最多两句。必须逐字，会被机械校验。禁止改写或省略。"
+          },
+          "counter_quote": {
+            "type": "string",
+            "description": "仅 C 组（论文 vs 代码）：代码文件中与 quote 矛盾的逐字原文。同样被机械校验，对不上则整条丢弃。必须与 counter_source 成对出现。"
+          },
+          "counter_source": {
+            "type": "string",
+            "description": "仅 C 组：counter_quote 所在文件，相对代码根目录的路径，如 config.py 或 src/train.py。"
+          },
+          "counter_line": {
+            "type": "integer",
+            "description": "由闸门回填，模型不要输出。"
+          }
+        }
+      }
+    }
+  }
+}

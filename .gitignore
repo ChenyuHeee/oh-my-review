@@ -1,0 +1,10 @@
+# 本地 harness 配置：含明文 ANTHROPIC_AUTH_TOKEN，绝不入库
+.claude/settings.json
+.claude/settings.local.json
+
+# 审查产物：每轮都是新的，且可能包含未发表论文的原文引用
+runs/
+
+# Python
+__pycache__/
+*.pyc

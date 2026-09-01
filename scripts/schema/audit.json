@@ -1,0 +1,60 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdicts", "missed"],
+  "properties": {
+    "verdicts": {
+      "type": "array",
+      "description": "对每条送审 finding 的裁定，顺序与输入一致",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "verdict", "corrected_severity", "reason", "paper_already_addresses"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "送审 finding 的 id"
+          },
+          "verdict": {
+            "type": "string",
+            "enum": ["CONFIRMED", "DOWNGRADE", "FALSE_POSITIVE"],
+            "description": "CONFIRMED=问题成立 / DOWNGRADE=成立但被高估或论文已部分自答 / FALSE_POSITIVE=不成立或引文不支持该主张"
+          },
+          "corrected_severity": {
+            "type": ["string", "null"],
+            "enum": ["CRITICAL", "RECOMMENDED", "MINOR", null],
+            "description": "verdict 为 DOWNGRADE 时给出修正后的等级，否则为 null"
+          },
+          "reason": {
+            "type": "string",
+            "description": "一到两句裁定依据。判 FALSE_POSITIVE 必须说明是引文不支持还是问题本身不成立。"
+          },
+          "paper_already_addresses": {
+            "type": ["string", "null"],
+            "description": "论文中已经回答该质疑的位置，如 §5.2。没有则为 null。"
+          }
+        }
+      }
+    },
+    "missed": {
+      "type": "array",
+      "description": "送审方漏报、但你在同一维度内发现的问题。没有则给空数组。字段与 findings.json 一致，同样过闸门2 校验。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "location", "issue", "fix"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["CRITICAL", "RECOMMENDED", "MINOR"] },
+          "location": { "type": "string", "description": "论文中的位置，如 §4.1 或 Table 3" },
+          "line": { "type": "integer", "description": "paper.md 中的行号，取 quote 首行" },
+          "issue": { "type": "string", "description": "一句话说清问题是什么" },
+          "fix": { "type": "string", "description": "一句话说清怎么改" },
+          "quote": { "type": "string", "description": "paper.md 中的逐字原文，最多两句，会被机械校验" },
+          "counter_quote": { "type": "string", "description": "B/C 组：代码文件中的逐字原文，与 counter_source 成对出现" },
+          "counter_source": { "type": "string", "description": "B/C 组：counter_quote 所在文件，相对代码根目录的路径" },
+          "counter_line": { "type": "integer", "description": "由闸门回填，不要输出" }
+        }
+      }
+    }
+  }
+}

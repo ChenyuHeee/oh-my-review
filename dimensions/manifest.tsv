@@ -1,0 +1,29 @@
+# 维度登记表。列: dim_id <TAB> group <TAB> lead_engine <TAB> 说明
+#
+# group 按「审的是哪个物件」划分，因为这决定了维度需要什么输入：
+#   A = 论文文本，只需 paper.md
+#   B = 代码与实验，需 --code-root（沿用 exp-review 的五个维度与判定词）
+#   C = 论文 vs 代码的交叉一致性，需 --code-root
+# 未给 --code-root 时 B、C 两组整组跳过（不是失败）。
+#
+# lead_engine 是另一根正交的轴，不参与分组：
+#   codex 主审偏机械核对（长上下文里抓数字、引用、配置取值更稳）
+#   claude 主审偏判断（主张强度、替代解释、叙述逻辑更稳）
+# 交叉稽核阶段由另一方复核，见 scripts/cross_audit.sh
+#
+# reproducibility(A) 与 data-reproducibility(B) 的边界：前者只看论文有没有
+# 报告足以复现的信息，后者看仓库里的代码与数据实际能不能跑出声明的数字。
+numeric-consistency	A	claude	数值、表格、图文一致性
+citation-integrity	A	claude	引用与归属完整性
+stats-validity	A	claude	统计有效性与方差报告
+reproducibility	A	claude	论文是否报告了足以复现主结果的信息
+claim-evidence	A	claude	主张强度与证据覆盖是否对齐
+experiment-design	A	claude	能否排除替代解释
+novelty-positioning	A	claude	贡献边界与相关工作定位
+writing-structure	A	claude	妨碍理解的表达与结构问题
+purpose-alignment	B	claude	目的对齐：测的是不是声称要验证的假设
+logic-completeness	B	claude	逻辑完备：因果推断、阈值选择、data leakage
+design-soundness	B	claude	设计合理：基线实现方式、数据真实性、采样、cherry-picking
+implementation-completeness	B	claude	实现完整：基线、数据来源、结果提取路径
+data-reproducibility	B	claude	数据可复现：脚本与结果是否提交、能否跑出声明数字
+code-paper-consistency	C	claude	论文声明的设置与代码实际取值是否矛盾

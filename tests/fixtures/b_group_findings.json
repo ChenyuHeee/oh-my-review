@@ -1,0 +1,66 @@
+{
+  "dimension": "design-soundness",
+  "findings": [
+    {
+      "severity": "CRITICAL",
+      "location": "config.py 数据集配置",
+      "issue": "评测集是合成数据 synthetic_longqa_v2，不是标准 benchmark，无法支撑对外声明的效果。",
+      "fix": "改用标准 benchmark 的官方划分重跑，或明确降级为合成数据上的初步观察。",
+      "counter_quote": "DATASET = \"synthetic_longqa_v2\"",
+      "counter_source": "config.py"
+    },
+    {
+      "severity": "CRITICAL",
+      "location": "config.py 基线列表",
+      "issue": "样本量仅 50 条且评测在 dev 上，任何组间差异都可能是采样噪声。",
+      "fix": "扩大到完整 test 划分，并报告方差或置信区间。",
+      "counter_quote": "NUM_EVAL_EXAMPLES = 50",
+      "counter_source": "config.py"
+    },
+    {
+      "severity": "RECOMMENDED",
+      "location": "config.py 评测划分",
+      "issue": "只在 dev 上评测，缺少 test 结果，存在按 dev 反复调参的风险。",
+      "fix": "补 test 划分结果，并说明调参只用了 dev。",
+      "counter_quote": "EVAL_SPLIT = \"dev\"",
+      "counter_source": "config.py"
+    },
+    {
+      "severity": "CRITICAL",
+      "location": "config.py",
+      "issue": "伪造条目：声称配置里关掉了梯度检查点，该行不存在，应被闸门丢弃。",
+      "fix": "无（测试用例）。",
+      "counter_quote": "USE_GRADIENT_CHECKPOINT = False",
+      "counter_source": "config.py"
+    },
+    {
+      "severity": "CRITICAL",
+      "location": "某处基线实现",
+      "issue": "无任何引文的纯断言：既没有 quote 也没有 counter_quote，应被丢弃。",
+      "fix": "无（测试用例）。"
+    },
+    {
+      "severity": "RECOMMENDED",
+      "location": "config.py",
+      "issue": "只给代码引文未给来源，应被成对校验拒绝。",
+      "fix": "无（测试用例）。",
+      "counter_quote": "OPTIMIZER = \"adamw\""
+    },
+    {
+      "severity": "MINOR",
+      "location": "config.py",
+      "issue": "代码引文过短，无判别力，应被长度下限拒绝。",
+      "fix": "无（测试用例）。",
+      "counter_quote": "= 8",
+      "counter_source": "config.py"
+    },
+    {
+      "severity": "CRITICAL",
+      "location": "config.py 优化器",
+      "issue": "路径逃逸尝试：counter_source 指向 code-root 之外，应被拒绝。",
+      "fix": "无（测试用例）。",
+      "counter_quote": "root:x:0:0:root:/root:/bin/bash",
+      "counter_source": "../../../../../../etc/passwd"
+    }
+  ]
+}
